@@ -21,7 +21,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
     if (isExisting) {
       _favoriteMeals.remove(meal);
-    } else {
+    } else { 
       _favoriteMeals.add(meal);
     }
   }
@@ -34,11 +34,16 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget activePage = CategoriesScreen();
+    Widget activePage = CategoriesScreen(
+      onToggleFavoriates:_toggleMealFavoritesStatus,
+    );
     var activePageTitle = 'Categories';
 
     if (_selectedPageIndex == 1) {
-      activePage = const MealsScreen(meals: []);
+      activePage =  MealsScreen(
+        meals: [],
+        onToggleFavoriates: _toggleMealFavoritesStatus,
+        );
       activePageTitle = 'Your Favoriates';
     }
     return Scaffold(
