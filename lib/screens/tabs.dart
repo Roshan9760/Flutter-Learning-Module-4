@@ -5,6 +5,8 @@ import 'package:mealsapp/screens/categories.dart';
 import 'package:mealsapp/screens/filters.dart';
 import 'package:mealsapp/screens/meals.dart';
 import 'package:mealsapp/widgets/main_drawer.dart';
+import 'package:mealsapp/provider/meals_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 const kInitialFilters = {
   Filters.glutenFree: false,
@@ -13,16 +15,16 @@ const kInitialFilters = {
   Filters.vegan: false,
 };
 
-class TabsScreen extends StatefulWidget {
+class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key});
 
   @override
-  State<TabsScreen> createState() {
+  ConsumerState<TabsScreen> createState() {
     return _TabsScreenState();
   }
 }
 
-class _TabsScreenState extends State<TabsScreen> {
+class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _selectedPageIndex = 0;
   final List<Meal> _favoriteMeals = [];
   Map<Filters, bool> _selectedFilter = kInitialFilters;
@@ -58,10 +60,11 @@ class _TabsScreenState extends State<TabsScreen> {
   void _setScreen(String identifier) async {
     Navigator.of(context).pop();
     if (identifier == 'Filters') {
-      final result = await Navigator.of(context).push<Map<Filters, bool>>(
-          MaterialPageRoute(builder: (ctx) => FilterScreen(
-            currentFilters: _selectedFilter,
-          )));
+      final result = await Navigator.of(context)
+          .push<Map<Filters, bool>>(MaterialPageRoute(
+              builder: (ctx) => FilterScreen(
+                    currentFilters: _selectedFilter,
+                  )));
       setState(() {
         _selectedFilter = result ?? kInitialFilters;
       });
@@ -70,7 +73,8 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final availabelMeals = dummyMeals.where((meal) {
+    final meals = ref.watch(mealsProvider);
+    final availabelMeals = meals.where((meal) {
       if (_selectedFilter[Filters.glutenFree]! && !meal.isGlutenFree) {
         return false;
       }
