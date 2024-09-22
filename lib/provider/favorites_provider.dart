@@ -8,17 +8,19 @@ class FavoriteMealsNotifier extends StateNotifier<List<Meal>> {
   // directly or edit the existing list or value  but we can assign new value always .
   //  so we need to add or remove smartly
 
-  void toggleMealsFavoritesStatus(Meal meal) {
+  bool toggleMealsFavoritesStatus(Meal meal) {
     final mealIsFavorites = state.contains(meal);
     if (mealIsFavorites) {
       state = state.where((newMeal) => newMeal.id != meal.id).toList();
+      return false;
     } else {
       state = [...state, meal];
+      return true;
     }
   }
 }
 
-final FavoriteMealsProvider = 
-StateNotifierProvider<FavoriteMealsNotifier,List<Meal>>((ref) {
+final FavoriteMealsProvider =
+    StateNotifierProvider<FavoriteMealsNotifier, List<Meal>>((ref) {
   return FavoriteMealsNotifier();
 });
